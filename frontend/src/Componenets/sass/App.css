@@ -1,0 +1,413 @@
+a {
+  text-decoration: none;
+}
+
+.Header {
+  z-index: 99;
+}
+
+.parentHeader {
+  height: 60px;
+}
+
+.loginAdmin {
+  background-color: #ffffff;
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+}
+
+.loginAdmin input[type=email], .loginAdmin input[type=password] {
+  width: 100%;
+  padding: 10px;
+  margin: 5px 0px 20px 0px;
+  border: none;
+  border-radius: 5px;
+  box-shadow: 0px 0px 5px rgba(0, 0, 0, 0.2);
+}
+
+.loginAdmin input[type=submit] {
+  background-color: #4CAF50;
+  color: #ffffff;
+  border: none;
+  padding: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.loginAdmin input[type=submit]:hover {
+  background-color: #3e8e41;
+}
+
+/*----start login Candidate---*/
+.lr {
+  display: flex;
+  flex-direction: column;
+  margin-top: 15px;
+  justify-content: center;
+  align-items: center;
+}
+.lr ul li {
+  cursor: pointer;
+}
+
+.login .formLogin, .Register .formLogin {
+  width: 400px;
+  margin: 30px;
+}
+.login .formReg, .login .formLogin, .Register .formReg, .Register .formLogin {
+  box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
+  padding: 15px;
+  width: 650px;
+  margin: 20px auto;
+}
+.login ul li, .Register ul li {
+  color: black;
+  padding: 10px 25px;
+  border-radius: 10px;
+  font-weight: bold;
+  cursor: pointer;
+}
+.login ul .active, .Register ul .active {
+  background-color: #0d6efd;
+  color: #fff;
+}
+.login h1, .Register h1 {
+  font-size: 24px;
+  font-weight: 700;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.login label, .Register label {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 10px;
+}
+.login input[type=text], .login input[type=email], .login input[type=password], .Register input[type=text], .Register input[type=email], .Register input[type=password] {
+  border: none;
+  border-bottom: 2px solid #ccc;
+  border-radius: 0;
+  box-sizing: border-box;
+  font-size: 16px;
+  margin-bottom: 20px;
+  padding: 10px 5px;
+  width: 100%;
+}
+.login input[type=text]:focus, .login input[type=password]:focus, .Register input[type=text]:focus, .Register input[type=password]:focus {
+  border-bottom: 2px solid #000;
+  outline: none;
+}
+.login input[type=submit], .Register input[type=submit] {
+  background-color: #7f3f98;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  cursor: pointer;
+  font-size: 16px;
+  padding: 10px;
+  margin-top: 20px;
+  width: 100%;
+}
+.login input[type=submit]:hover, .Register input[type=submit]:hover {
+  background-color: #5d2a7d;
+}
+
+/*----end login Candidate---*/
+/*----start Home----*/
+.Home .HomeImg {
+  width: 100%;
+}
+
+.Home .desc {
+  width: 100%;
+  text-align: center;
+}
+
+.Home .desc .searchJob > div {
+  width: 25%;
+}
+
+.Home .desc .searchJob {
+  width: 70%;
+  background-color: #fff;
+  margin: 0 auto;
+  height: 80px;
+  justify-content: space-around;
+  align-items: center;
+  border-radius: 50px;
+}
+.Home .desc .searchJob button {
+  background-color: #0146a6;
+  border: none;
+  color: #fff;
+  padding: 16px 30px;
+  border-radius: 25px;
+}
+
+.Home .desc .searchJob input, .Home .desc .searchJob select {
+  height: 60px;
+  width: 280px;
+  border: none;
+  outline: none;
+  padding-left: 20px;
+  border-right: 2px solid #dbdada;
+}
+.Home .desc .searchJob select {
+  border: none;
+}
+
+/*----end Home----*/
+/*----start jobs----*/
+.OtherInfoJb .type {
+  background-color: rgba(25, 103, 210, 0.15);
+  color: #1967d2;
+  border-radius: 18px;
+}
+.OtherInfoJb .urgent {
+  background-color: rgba(249, 171, 0, 0.15);
+  color: #f9ab00;
+  border-radius: 18px;
+}
+
+/*-----end jobs-----*/
+/*-----start Companies-----*/
+.Companies, .SomeBlogs {
+  background: #f3f7fb;
+}
+
+.Companies .company a:first-of-type {
+  color: #1967d2;
+}
+.Companies .company a:last-of-type {
+  color: #0d6efd;
+  background-color: #e2eaf8;
+  border-radius: 50px;
+  padding: 15px 25px;
+  font-weight: 450;
+}
+
+/*-----end Companies-----*/
+/*-----Start Blogs-----*/
+.Blogs img, .SomeBlogs img {
+  width: 100%;
+}
+.Blogs a, .SomeBlogs a {
+  color: #1967d2 !important;
+}
+
+/*-----end Blogs-----*/
+/*_-----start detailCompany----*/
+.AboutCompany {
+  background-color: rgba(1, 142, 171, 0.0901960784);
+  height: 260px;
+}
+
+.AboutCandidate {
+  background-color: rgba(1, 142, 171, 0.0901960784);
+  padding: 20px;
+}
+
+/*_-----end detailCompany----*/
+/*------start info company----*/
+.infoCom {
+  background-color: rgba(1, 142, 171, 0.0901960784);
+  border-radius: 10px;
+}
+.infoCom li {
+  display: flex;
+  justify-content: space-between;
+  list-style: none;
+  margin-bottom: 20px;
+}
+.infoCom .website {
+  background-color: rgb(25, 103, 210);
+  color: #fff;
+  display: block;
+  text-align: center;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+/*------end info Company----*/
+/*-----start footer-----*/
+.footer {
+  background-color: black;
+  color: white;
+}
+.footer ul {
+  list-style: none;
+}
+.footer ul li {
+  margin-bottom: 10px;
+}
+.footer .newsletter input[type=email] {
+  height: 70px;
+  width: 40%;
+  border: none;
+  outline: none;
+  padding-left: 20px;
+  border-right: 2px solid #dbdada;
+  border-radius: 40px;
+}
+.footer .newsletter input[type=submit] {
+  background-color: #0146a6;
+  border: none;
+  color: #fff;
+  padding: 16px 30px;
+  border-radius: 25px;
+  transform: translateX(-140px);
+}
+
+/*-----end footer-----*/
+/*------start Alljobs----*/
+.sideBar {
+  background-color: #f5f7fc;
+  border-radius: 10px;
+}
+.sideBar > div {
+  margin-bottom: 12px;
+}
+.sideBar > div h3 {
+  margin-bottom: 15px;
+}
+.sideBar ul li {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 7px;
+}
+.sideBar input[type=checkbox] {
+  width: 25px;
+  height: 25px;
+}
+
+/*------end Alljobs----*/
+/*------start contact-----*/
+.contact img {
+  width: 50px;
+  height: 50px;
+}
+.contact input:not(:last-of-type) {
+  background-color: #f0f5f7;
+}
+
+/*------end contact-----*/
+/*-----start dashboard-----*/
+.sidebar {
+  background-color: rgba(0, 0, 0, 0.87);
+  width: 300px;
+  color: #fff;
+}
+
+.sidebar .sidebar-item {
+  padding: 13px;
+}
+
+.sidebar .all {
+  padding: 35px;
+}
+
+.sidebar .all a {
+  color: #fff;
+}
+
+.sidebar .all .dropdown-toggle {
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.dropdown-menu {
+  background: none;
+  position: static !important;
+  transform: none !important;
+}
+
+table tr:nth-child(even) {
+  background-color: rgba(229, 229, 229, 0.3019607843);
+}
+
+tr td {
+  padding: 10px;
+}
+
+.Blog {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.admin {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.admin div {
+  padding: 10px;
+}
+
+.admin .con {
+  font-size: 40px;
+}
+
+.admin > div {
+  border: 3px solid #e5e5e5;
+  display: flex;
+  position: relative;
+}
+
+.admin > div div {
+  margin-right: 10px;
+}
+
+.view a {
+  position: absolute;
+  right: 7px;
+  bottom: 7px;
+}
+
+/*-----end dashboard-----*/
+/*-----start responsive-----*/
+@media (max-width: 768px) {
+  .Home .HomeImg {
+    height: 100vh;
+  }
+  .Home .desc .searchJob {
+    flex-direction: column;
+    height: auto;
+    background-color: transparent;
+  }
+  .Home .desc .searchJob input, .Home .desc .searchJob select {
+    margin-bottom: 15px;
+    padding-left: 35px;
+  }
+  .Home .desc .searchJob svg {
+    transform: translateY(-80%) !important;
+  }
+  .Home .desc .searchJob > div {
+    width: auto;
+  }
+  .footer .newsletter input[type=email] {
+    height: 55px;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  .footer .newsletter input[type=submit] {
+    border: none;
+    color: #fff;
+    padding: 16px 30px;
+    border-radius: 25px;
+    transform: translateX(-10px);
+  }
+  .login .formLogin {
+    width: auto;
+  }
+  .formReg {
+    width: auto !important;
+  }
+}
+/*-----end responsive-----*//*# sourceMappingURL=App.css.map */

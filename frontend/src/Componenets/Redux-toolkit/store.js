@@ -1,0 +1,11 @@
+
+import { configureStore } from "@reduxjs/toolkit";
+import Slice from "./Slice";
+
+const store = configureStore({
+     reducer:{
+        Data:Slice,
+    }
+})
+
+export default store;
