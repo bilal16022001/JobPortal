@@ -9,8 +9,31 @@ class ApplicationRepository implements ApplicationInterface
 {
     public function index()
     {
-        return Application::with("user", "job")->get();
+        $applications = Application::with("job", "user")
+            ->whereHas("job", function ($query) {
+                $query->where("Company_id", auth()->user()->id);
+            })
+            ->get();
+
+        return  $applications;
     }
+    public function ShortListApplication($request)
+    {
+
+        $applications = Application::with("job", "user")
+            ->whereHas("job", function ($query) use ($request) {
+                $query->where("Company_id", auth()->user()->id);
+            })
+            ->where("Status", $request->Status)
+            ->get();
+
+        return  $applications;
+    }
+    public function filterApplications()
+    {
+        return "filter";
+    }
+
     public function store($request)
     {
     }

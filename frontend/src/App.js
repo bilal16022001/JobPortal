@@ -33,6 +33,9 @@ import DetailJob from './Componenets/Employer/DetailJob';
 import EditJob from './Componenets/Employer/EditJob';
 import ShortListed from './Componenets/Employer/ShortListed';
 import Reports_E from './Componenets/Employer/Reports_E';
+import Profile from './Componenets/Candidate/Profile';
+import AppliedJob from './Componenets/Candidate/AppliedJob';
+import JobDetail from './Componenets/DetailJob';
 
 //solve problem CSRF token mismatch
 axios.defaults.baseURL = "http://localhost:8000/";
@@ -43,7 +46,10 @@ axios.defaults.withCredentials = true;
 //access to login
 axios.interceptors.request.use(function(config){
   const token = localStorage.getItem("auth_token");
+  // const tokenC = localStorage.getItem("auth_token_C");
   config.headers.Authorization = token ? `Bearer ${token}` : ``;
+  // config.headers.Authorization = tokenC ? `Bearer ${tokenC}` : ``;
+
   return config;
 });
 
@@ -59,7 +65,6 @@ function App() {
          <Routes>
             <Route path='/' element={<Home/>} />
             <Route path='/jobs' element={<AllJobs/>} />
-            {/* <Route path='/candidate' element={<Candidate/>} /> */}
             <Route path='/login' element={<Login/>} />
             <Route path='/register' element={<Register/>} />
             <Route path='/Admin' element={<LoginAdmin/>} />
@@ -68,7 +73,12 @@ function App() {
             <Route path='/Company/:id' element={<DetailCompany/>} />
             <Route path='/Blogs' element={<Blogs/>} />
             <Route path='/Blog/:id' element={<Blog/>} />
+            <Route path='/Job/:id' element={<JobDetail/>} />
 
+         
+                <Route path='/Profile' element={<Profile/>} />
+                <Route path='/AppliedJob' element={<AppliedJob/>} />
+           
             {/* start Module Admin */}
                <Route path='/Admin/Dashboard' element={<Dashboard/>} />
                <Route path='/Admin/Category' element={<Category/>} />
@@ -94,6 +104,8 @@ function App() {
               <Route path='/Employer/Reports' element={<Reports_E/>} />
 
                {/* end Module Employer */}
+
+               
          </Routes>
       </Router>
     </div>

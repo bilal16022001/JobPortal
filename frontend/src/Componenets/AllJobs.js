@@ -1,4 +1,4 @@
-import React from 'react'
+import React,{useEffect} from 'react'
 import Header from './Header'
 import logoCom from './images/logoC.png'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -6,8 +6,17 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import Footer from './Footer'
+import {fetchJobs} from './Redux-toolkit/Slice'
+import { useDispatch, useSelector } from 'react-redux';
 
 function AllJobs() {
+    
+    const dispatch = useDispatch();
+    const jobs = useSelector((state) => state.Data.Jobs);
+    useEffect(() => {
+    dispatch(fetchJobs())
+    },[])
+
   return (
     <div>
         <Header/>
@@ -76,21 +85,24 @@ function AllJobs() {
                    </div>
                    </div>
                </div>
-               <div className='col-sm-6 col-md-8'>
-               <div className='border border-3 border-solid p-3'>
+               <div className='col-sm-6 col-md-8 mb-3'>
+                   <div className='row'>
+                    
+        {jobs.length > 0 ? jobs.map(item => (
+            <div className='col-sm-6 col-md-6 mb-3'>
               <div className='logoCompany mb-3'>
-                 <img src={logoCom} />
+              <img src={`http://localhost:8000/${item.company.logo}`} style={{width:"100px"}} className="rounded-circle" />                      
               </div>
               <div className='job'>
-                <h4 className='mb-2'>Software Engineer (Android), Libraries</h4>
+                <h4 className='mb-2'>{item.Job}</h4>
                 <ul className='InfoJob mb-2 nav gap-4'>
                     <li className=''>
                         <BusinessCenterIcon/> 
-                        Upwork
+                        {item.company.Name}
                     </li>
                     <li>
                         <LocationOnIcon/>
-                        London, UK
+                        {item.company.Country}, {item.company.Location}
                     </li>
                     <li>
                         <QueryBuilderIcon/>
@@ -98,21 +110,25 @@ function AllJobs() {
                     </li>
                     <li>
                         <AttachMoneyIcon/>
-                        $35k - $45k
+                        {item.Salary}
                     </li>
                 </ul>
                 <ul className='OtherInfoJb nav gap-4'>
                     <li className='type p-1 pe-3 ps-3'>
 
-                        Full-Time
+                        {item.Status}
                     </li>
                     <li className='urgent p-1 pe-3 ps-3'>
-                        Urgent
+                        {item.Type}
                     </li>
                 </ul>
               </div>
+           </div>
+        )) : <div>There is no jobs</div>}
+                
+                   </div>
                </div>
-               </div>
+               
             </div>
         </div>
         <Footer/>

@@ -22,6 +22,14 @@ class ApplicationController extends Controller
     {
         return $this->application->index();
     }
+    public function ShortListApplication(Request $request)
+    {
+        return $this->application->ShortListApplication($request);
+    }
+    public function filterApplications()
+    {
+        return $this->application->filterApplications();
+    }
 
     /**
      * Show the form for creating a new resource.

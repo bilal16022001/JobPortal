@@ -11,7 +11,7 @@ class EmployerRepository implements EmployerInterface
 {
     public function index()
     {
-        return Employer::all();
+        return Employer::with("jobs")->get();
     }
     // public function create()
     // {
@@ -76,14 +76,6 @@ class EmployerRepository implements EmployerInterface
             ]);
         }
 
-        // if (!$employer || !Hash::check($request->password, $employer->password)) {
-        //     return response()->json([
-        //         'status' => 401,
-        //         'message' => 'Invalid Credintials'
-        //     ]);
-        // } else {
-        //     $token = $employer->createToken($employer->email . '_EmployerToken', ['server:Employer'])->plainTextToken;
-        // }
 
         $file = $request->file("logo");
         $ex  =  $file->getClientOriginalExtension();

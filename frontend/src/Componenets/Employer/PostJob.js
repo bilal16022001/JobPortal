@@ -12,6 +12,7 @@ function PostJob() {
   const [Auth,setAuth] = useState(false);
   const navigate = useNavigate();
   const categories = useSelector((state) => state.Data.Categories);
+  const [UserId,setUserId] = useState(null);
 
   const dispatch = useDispatch();
   useEffect(() => {
@@ -19,7 +20,7 @@ function PostJob() {
    dispatch(fetchCategories());
      axios.get("/api/CheckEmployer").then(res=> {
             if(res.data.status == 200){
-              console.log(res.data.message);
+              setUserId(res.data.user.id);
               setAuth(true)
              }else{
               setAuth(false)
@@ -30,7 +31,7 @@ function PostJob() {
            setAuth(false);
         }
   },[]);
-
+  
   const [inputValues, setInputValues] = useState({
     Job: "",
     Category_id: "",
@@ -46,7 +47,8 @@ function PostJob() {
     Expired_Date:"",
     Description:"",
     Responsibilities:"",
-    Status:""
+    Status:"",
+    Company_id:UserId
 
 }); 
   const handleChange = (event) => {

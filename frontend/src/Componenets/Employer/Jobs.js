@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect ,useState} from 'react'
 import SideBar_E from './SideBar_E'
 import styled from 'styled-components'
 import {fetchJobs} from '../Redux-toolkit/Slice'
@@ -9,16 +9,42 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Link } from 'react-router-dom'
 import swal from 'sweetalert'
 import axios from 'axios'
+import { useNavigate } from 'react-router';
 
 function Jobs() {
+  
     const jobs = useSelector((state) => state.Data.Jobs);
+    const [Auth,setAuth] = useState(false);
+    const [Jobs,setJobs]=useState([]);
+
+    const [userId,setuserId]=useState(null);
+    const navigate = useNavigate();
     const dispatch = useDispatch();
-console.log("jobs",jobs);
     useEffect(() => {
       dispatch(fetchJobs());
+
+      axios.get("/api/CheckEmployer").then(res=> {
+        if(res.data.status == 200){
+          setuserId(res.data.user.id)
+          setAuth(true)
+         }else{
+          setAuth(false)
+         }
+ })
+ getJobs();
+    return () => {
+       setAuth(false);
+    }
     },[]);
-
-
+  
+   const getJobs=()=>{
+    axios.get("/api/filterJobs").then(res => {
+       console.log(res.data);
+       setJobs(res.data);
+    }).catch(err => {
+        console.log(err);
+    })
+  }
     const DeleteJob = (id) => {
     
       swal({
@@ -44,6 +70,31 @@ console.log("jobs",jobs);
         }
       });
   }
+
+  axios.interceptors.response.use(undefined,function axiosRetryInterceptor(err){
+    if(err.response.status==401){
+       swal("Unauthorized",err.response.data.message,"warning")
+       navigate("/login")
+     }
+     
+     return Promise.reject(err)
+})
+
+axios.interceptors.response.use(function(response){
+    return response;
+},function(error){
+   if(error.response.status==403){
+    swal("Forbidden",error.response.data.message,"warning");
+    navigate("/login")
+    }
+    else if(error.response.status==404){
+        swal("404 Error","page not f-ond","warning");
+        navigate("/Page403")
+    }
+    return Promise.reject(error)
+ }
+
+)
   return (
     <div>
     <div className='d-flex'>
@@ -56,7 +107,7 @@ console.log("jobs",jobs);
 <div class="">
     <div class="table-responsive">
         <table class="main-table  table table-bordered">
-           {jobs.length > 0 ? <tr>
+           {Jobs.length > 0 ? <tr>
                   <td>#</td>
                   <td>Title</td>
                   <td>Category</td>
@@ -64,8 +115,8 @@ console.log("jobs",jobs);
                   <td>Created & Expaired</td>
                   <td>Status</td>
                   <td>Action</td>
-            </tr> : <h2>There is no jobs</h2>}  
-              {jobs.map(item => (
+            </tr> : <div className='alert alert-info'>There is no jobs</div>}  
+              {Jobs.map(item => (
                    <tr>
                       <td>{item.id}</td>
                       <td>{item.Job}</td>

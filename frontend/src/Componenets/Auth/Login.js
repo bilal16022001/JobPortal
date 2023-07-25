@@ -39,8 +39,26 @@ function Login() {
 
       }
        if(who == "Candidate"){
-         console.log("Candidate");
-      }
+        const data = {
+          email:email,
+          password:password
+        }
+        axios.get('/sanctum/csrf-cookie').then(response => {
+          axios.post("/api/loginU",data).then(res => {
+
+              if(res.data.status == 200){
+               window.localStorage.setItem("auth_token_C",res.data.token);
+               navigate("/");
+               swal("login Successfully!","","success");
+            }
+            else{
+               swal("Email Or Password Incorrect","","warning")
+             }
+          }).catch(err => {
+             console.log(err);
+          })
+        })
+        }
   }
 
   return (

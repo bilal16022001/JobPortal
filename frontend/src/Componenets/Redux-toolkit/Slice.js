@@ -11,7 +11,7 @@ const initialState = {
     width:270
  }
 
- export const fetchCategories = createAsyncThunk("category/fetch",() => {
+export const fetchCategories = createAsyncThunk("category/fetch",() => {
     return axios.get("/api/Category").then((res) => res.data);
 })
 export const fetchEmployers = createAsyncThunk("employer/fetch",() => {
@@ -27,6 +27,7 @@ export const fetchJobs = createAsyncThunk("Job/fetch",() => {
 export const fetchApplications = createAsyncThunk("Application/fetch",() => {
    return axios.get("/api/Applications").then((res) => res.data);
 })
+
 
 const Slice = createSlice({
    name:"Slice",

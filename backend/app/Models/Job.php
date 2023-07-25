@@ -21,6 +21,10 @@ class Job extends Model
     }
     public function application()
     {
-        return $this->hasOne("\App\Models\Application", "Job_id");
+        return $this->hasMany("\App\Models\Application", "Job_id");
+    }
+    public function filterApplicationsByStatus($status)
+    {
+        return $this->applications()->where('Status', $status);
     }
 }

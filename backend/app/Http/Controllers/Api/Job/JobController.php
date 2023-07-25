@@ -22,7 +22,10 @@ class JobController extends Controller
     {
         return $this->job->index();
     }
-
+    public function filterJobs()
+    {
+        return $this->job->filterJobs();
+    }
     /**
      * Show the form for creating a new resource.
      */

@@ -4,12 +4,21 @@ namespace App\Repository;
 
 use App\Interface\JobInterface;
 use App\Models\Job;
+use App\Models\Application;
+
 
 class JobRepository implements JobInterface
 {
     public function index()
     {
-        return Job::with("Category", "Company", "application")->get();
+        return Job::with("Category", "Company", "application.user")->get();
+    }
+    public function filterJobs()
+    {
+        return Job::with("Company", "Category", "application.user")
+            ->whereHas("Company", function ($qurey) {
+                $qurey->where("Company_id", auth()->user()->id);
+            })->get();
     }
     public function show($id)
     {
@@ -38,7 +47,7 @@ class JobRepository implements JobInterface
         Job::create([
             'Job' => $request->Job,
             'Category_id' => $request->Category_id,
-            'Company_id' => auth()->user()->id,
+            'Company_id' => 2,
             'Type' => $request->Type,
             'Level' => $request->Level,
             'Salary' => $request->Salary,

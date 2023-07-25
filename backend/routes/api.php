@@ -22,13 +22,18 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::post("/login", [AdminController::class, "login"]);
-// Route::post("/Register", [UserController::class, "Register"]);
 Route::post("/RegisterEmp", [EmployerController::class, "RegisterEmp"]);
 Route::post("/login_E", [EmployerController::class, "login_E"]);
+Route::post("/loginU", [UserController::class, "login"]);
+
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource("Category", JobCategoryController::class);
     Route::apiResource("Users", UserController::class);
+    Route::apiResource("Employers", EmployerController::class);
+
+    // Route::apiResource("Applications", ApplicationController::class);
+    Route::post("/logout", [UserController::class, "Logout"]);
 });
 
 Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
@@ -40,7 +45,6 @@ Route::middleware(['auth:sanctum', 'isAdmin'])->group(function () {
         ]);
     });
 
-    Route::apiResource("Employers", EmployerController::class);
     Route::apiResource("About", AboutController::class);
     Route::apiResource("Contact", ContactController::class);
 });
@@ -51,9 +55,23 @@ Route::middleware(['auth:sanctum', 'isEmployer'])->group(function () {
         return response()->json([
             'message' => "YOU Are Employer",
             'status' => 200,
+            'user' => auth()->user()
         ]);
     });
-    Route::apiResource("Job", JobController::class);
-    // Route::apiResource("Applications", ApplicationController::class);
+    Route::apiResource("Applications", ApplicationController::class);
+    Route::post("/ShortListApplication", [ApplicationController::class, "ShortListApplication"]);
+    Route::get("/filterJobs", [JobController::class, "filterJobs"]);
 });
-Route::apiResource("Applications", ApplicationController::class);
+
+Route::middleware(["auth:sanctum", "isCandidate"])->group(function () {
+
+    Route::get("/CheckCnadidate", function () {
+        return response()->json([
+            'message' => "YOU Are candidate",
+            'status' => 200,
+            'user' => auth()->user()
+        ]);
+    });
+});
+
+Route::apiResource("Job", JobController::class);

@@ -12,4 +12,9 @@ class Employer extends Model
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $guarded = [];
+
+    public function jobs()
+    {
+        return $this->hasMany("\App\Models\Job", "Company_id");
+    }
 }

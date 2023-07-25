@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import SideBar_E from './SideBar_E'
 import styled from 'styled-components'
-import {fetchApplications} from '../Redux-toolkit/Slice'
+import {fetchApplications,fetchJobs} from '../Redux-toolkit/Slice'
 import { useSelector,useDispatch } from 'react-redux'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -14,11 +14,30 @@ import { useNavigate } from 'react-router'
 function Applications() {
 
   const Applications = useSelector((state) => state.Data.Applications);
+
+  const [Auth,setAuth] = useState(false);
+  const navigate = useNavigate();
   const dispatch = useDispatch();
+
 
   useEffect(() => {
      dispatch(fetchApplications())
+     dispatch(fetchJobs());
+     axios.get("/api/CheckEmployer").then(res=> {
+      if(res.data.status == 200){
+        console.log(res.data.message);
+       setAuth(true)
+       }else{
+        setAuth(false)
+       }
+    })
+
+  return () => {
+     setAuth(false);
+  }
   },[]);
+
+
 
   const AcceptCandidate = (id) => {
      swal({
@@ -107,6 +126,31 @@ function Applications() {
       }
     });
 }
+
+axios.interceptors.response.use(undefined,function axiosRetryInterceptor(err){
+  if(err.response.status==401){
+     swal("Unauthorized",err.response.data.message,"warning")
+     navigate("/login")
+   }
+   
+   return Promise.reject(err)
+})
+
+axios.interceptors.response.use(function(response){
+  return response;
+},function(error){
+ if(error.response.status==403){
+  swal("Forbidden",error.response.data.message,"warning");
+  navigate("/login")
+  }
+  else if(error.response.status==404){
+      swal("404 Error","page not f-ond","warning");
+      navigate("/Page403")
+  }
+  return Promise.reject(error)
+}
+
+)
   return (
     <div>
     <div className='d-flex'>
@@ -129,19 +173,20 @@ function Applications() {
                   <td>Action</td>
             </tr> : <div className='alert alert-info text-left'>There is No Application</div>}
               {Applications.map(item => (
+               
                    <tr>
                       <td>{item.id}</td>
-                      <td>{item?.user?.Name}</td>
-                      <td>{item?.job?.Job}</td>
-                      <td>{item?.job?.Location}</td>
-                      <td>{item.Status == 0 ? "Pending" : item.Status == 1 ? "Approved" : "Rejected"}</td>
+                      <td>{item.user.Name}</td>
+                      <td>{item.job.Job}</td>
+                      <td>{item.job.Location}</td>
+                      <td>{item.job.Status == 0 ? "Pending" : item.job.Status == 1 ? "Approved" : "Rejected"}</td>
                       <td>
                           <a  href='#' data-bs-toggle="modal" data-bs-target={`#show${item.id}`}><VisibilityIcon/></a>
-                          <a  href='#' onClick={()=>AcceptCandidate(item.id)}><DoneIcon/></a>
-                          <a href='# ' onClick={()=>RejectedCandidate(item.id)}><ClearIcon/></a>
-                          <a href='#'  onClick={()=>DeleteCandidate(item.id)}><DeleteIcon/></a>
+                          <a  href='#' onClick={()=>AcceptCandidate(item.user.id)}><DoneIcon/></a>
+                          <a href='# ' onClick={()=>RejectedCandidate(item.user.id)}><ClearIcon/></a>
+                          <a href='#'  onClick={()=>DeleteCandidate(item.user.id)}><DeleteIcon/></a>
                       </td>
-            <div class="modal fade" id={`show${item.id}`} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id={`show${item.user.id}`} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">
@@ -151,20 +196,20 @@ function Applications() {
                     <div className="modal-body">
                        <div class="row">
                           <div className='col-md-6'>
-                             <img className='w-100 rounded-circle' src={`http://127.0.0.1:8000/${item?.user?.Profile}`} />
+                             <img className='w-100 rounded-circle' src={`http://127.0.0.1:8000/${item.user.Profile}`} />
                           </div>
                           <div className='col-md-6'>
                               <ul className='navbar'>
-                                <li className='nav-link'><span className=''>Name Jober</span> : {item?.user?.Name}</li>
-                                <li className='nav-link'><span className=''>Job</span> : {item?.job?.Job}</li>
-                                <li className='nav-link'><span className=''>Location</span> : {item?.job?.Location}</li>
-                                <li className='nav-link'><span className=''>Phone</span> : {item?.user?.Phone}</li>
-                                <li className='nav-link'><span className=''>Email</span> : {item?.user?.Email}</li>
-                                <li className='nav-link'><span className=''>Type Job</span> : {item?.job?.Type}</li>
-                                <li className='nav-link'><span className=''>Level</span> : {item?.job?.Level}</li>
-                                <li className='nav-link'><span className=''>Rate</span> : {item?.job?.Rate}</li>
-                                <li className='nav-link'><span className=''>Hours</span> : {item?.job?.Hours}</li>
-                                <li className='nav-link'><span className=''>Salary Anneul</span> : {item?.job?.Salary}</li>
+                                <li className='nav-link'><span className=''>Name Jober</span> : {item.user.Name}</li>
+                                <li className='nav-link'><span className=''>Job</span> : {item.job.Job}</li>
+                                <li className='nav-link'><span className=''>Location</span> : {item.user.Location}</li>
+                                <li className='nav-link'><span className=''>Phone</span> : {item.user.Phone}</li>
+                                <li className='nav-link'><span className=''>Email</span> : {item.user.Email}</li>
+                                <li className='nav-link'><span className=''>Type Job</span> : {item.job.Type}</li>
+                                <li className='nav-link'><span className=''>Level</span> : {item.job.Level}</li>
+                                <li className='nav-link'><span className=''>Rate</span> : {item.job.Rate}</li>
+                                <li className='nav-link'><span className=''>Hours</span> : {item.job.Hours}</li>
+                                <li className='nav-link'><span className=''>Salary Anneul</span> : {item.job.Salary}</li>
                           </ul>
                           </div>
                          
@@ -175,7 +220,7 @@ function Applications() {
                 </div>
               </div>
                    </tr>
-                   
+                  
               ))}
   
   
@@ -196,6 +241,8 @@ function Applications() {
 </div>
   )
 }
+
+
 
 export default Applications
 

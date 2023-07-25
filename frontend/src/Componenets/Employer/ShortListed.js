@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect,useMemo, useState } from 'react'
 import SideBar_E from './SideBar_E'
 import styled from 'styled-components'
-import {fetchApplications} from '../Redux-toolkit/Slice'
+import {fetchApplications,fetchJobs} from '../Redux-toolkit/Slice'
 import { useSelector,useDispatch } from 'react-redux'
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -14,74 +14,72 @@ import { useNavigate } from 'react-router'
 function ShortListed() {
 
   const Applications = useSelector((state) => state.Data.Applications);
+  const jobs = useSelector((state) => state.Data.Jobs);
+  const [Auth,setAuth] = useState(false);
+  const [userId,setuserId]=useState(null);
+  const [ShortListApp,setShortListApp]=useState([]);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  // const [check,setCheck]=useState(null);
 
   useEffect(() => {
-     dispatch(fetchApplications())
+     dispatch(fetchApplications());
+     dispatch(fetchJobs());
+     axios.get("/api/CheckEmployer").then(res=> {
+      if(res.data.status == 200){
+        setuserId(res.data.user.id)
+       setAuth(true)
+       }else{
+        setAuth(false)
+       }
+    })
+    ShortListdJob()
+  return () => {
+     setAuth(false);
+  }
   },[]);
 
-  const AcceptCandidate = (id) => {
-     swal({
-         title: "Are you sure To Approve This Jober ?",
-         text: "Once Approve, you will not be able to recover this Approve !",
-         icon: "warning",
-         buttons: true,
-         dangerMode: true,
-       })
-       .then((willDelete) => {
-         if (willDelete) {
-          const data = new FormData();
-                data.append("check",1);
-                data.append("_method","PATCH");
+  const [filter,setFilter] = useState({
+     Status:1,
+     Search:""
+   })
+const ShortListdJob = () => {
+   axios.post("/api/ShortListApplication",filter).then(res => {
+        console.log(res.data);
+        setShortListApp(res.data);
+   }).catch(err => {
+     console.log(err);
+   })
+}
+  // const filterShortListd = useMemo(
+  //   () => jobs.filter(item => item.Company_id == userId).map(item => item),
+  //  [jobs])
 
-               axios.post(`/api/Applications/${id}`,data).then(res => {
-                  if(res.data.status == 200){
-                    swal("Poof! this jober has been Approeved!","","success");
-                      dispatch(fetchApplications());
-                  }
-                  console.log(res.data);
-               }).catch(err => {
-                  console.log(err);
-               })
-         
-          
-         } else {
-           swal("Approve  is safe!");
-         }
-       });
+  axios.interceptors.response.use(undefined,function axiosRetryInterceptor(err){
+    if(err.response.status==401){
+       swal("Unauthorized",err.response.data.message,"warning")
+       navigate("/login")
+     }
+     
+     return Promise.reject(err)
+  })
+  
+  axios.interceptors.response.use(function(response){
+    return response;
+  },function(error){
+   if(error.response.status==403){
+    swal("Forbidden",error.response.data.message,"warning");
+    navigate("/login")
+    }
+    else if(error.response.status==404){
+        swal("404 Error","page not f-ond","warning");
+        navigate("/Page403")
+    }
+    return Promise.reject(error)
   }
-  const RejectedCandidate = (id) => {
-    swal({
-        title: "Are you sure To Rejecte This Jober ?",
-        text: "Once Rejecte, you will not be able to recover this Reject !",
-        icon: "warning",
-        buttons: true,
-        dangerMode: true,
-      })
-      .then((willDelete) => {
-        if (willDelete) {
-         const data = new FormData();
-               data.append("check",3);
-               data.append("_method","PATCH");
+  
+  )
 
-              axios.post(`/api/Applications/${id}`,data).then(res => {
-                 if(res.data.status == 200){
-                   swal("Poof! this jober has been Rejected!","","success");
-                     dispatch(fetchApplications());
-                 }
-                 console.log(res.data);
-              }).catch(err => {
-                 console.log(err);
-              })
-        
-         
-        } else {
-          swal("Reject is safe!");
-        }
-      });
- }
   return (
     <div>
     <div className='d-flex'>
@@ -94,7 +92,7 @@ function ShortListed() {
 <div class="">
     <div class="table-responsive">
         <table class="main-table text-center table table-bordered">
-        {Applications.filter(item => item.Status==1).length > 0 ?
+        {ShortListApp.length > 0 ?
              <tr>
                   <td>#</td>
                   <td>Name Jober</td>
@@ -103,51 +101,53 @@ function ShortListed() {
                   <td>Status</td>
                   <td>Action</td>
             </tr>: <div className='alert alert-info text-left'>There is No ShortListed Jobers</div>}
-              {Applications.filter(it => it.Status == 1).map(item => (
-                   <tr>
-                      <td>{item.id}</td>
-                      <td>{item?.user?.Name}</td>
-                      <td>{item?.job?.Job}</td>
-                      <td>{item?.job?.Location}</td>
-                      <td>{item.Status == 0 ? "Pending" : item.Status == 1 ? "Approved" : "Rejected"}</td>
-                      <td>
-                          <a  href='#' data-bs-toggle="modal" data-bs-target={`#show${item.id}`}><VisibilityIcon/></a>
-                      </td>
-            <div class="modal fade" id={`show${item.id}`} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Application</h1>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div className="modal-body">
-                       <div class="row">
-                          <div className='col-md-6'>
-                             <img className='w-100 rounded-circle' src={`http://127.0.0.1:8000/${item?.user?.Profile}`} />
+              {ShortListApp.map(item => (
+             
+                <tr>
+                <td>{item.id}</td>
+                <td>{item.user.Name}</td>
+                <td>{item.job.Job}</td>
+                <td>{item.job.Location}</td>
+                <td>{item.Status == 0 ? "Pending" : item.Status == 1 ? "Approved" : "Rejected"}</td>
+                <td>
+                    <a  href='#' data-bs-toggle="modal" data-bs-target={`#show${item.id}`}><VisibilityIcon/></a>
+                </td>
+                    <div class="modal fade" id={`show${item.id}`} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                      <div class="modal-dialog">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h1 class="modal-title fs-5" id="exampleModalLabel">Detail Application</h1>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                           </div>
-                          <div className='col-md-6'>
-                              <ul className='navbar'>
-                                <li className='nav-link'><span className=''>Name Jober</span> : {item?.user?.Name}</li>
-                                <li className='nav-link'><span className=''>Job</span> : {item?.job?.Job}</li>
-                                <li className='nav-link'><span className=''>Location</span> : {item?.job?.Location}</li>
-                                <li className='nav-link'><span className=''>Phone</span> : {item?.user?.Phone}</li>
-                                <li className='nav-link'><span className=''>Email</span> : {item?.user?.Email}</li>
-                                <li className='nav-link'><span className=''>Type Job</span> : {item?.job?.Type}</li>
-                                <li className='nav-link'><span className=''>Level</span> : {item?.job?.Level}</li>
-                                <li className='nav-link'><span className=''>Rate</span> : {item?.job?.Rate}</li>
-                                <li className='nav-link'><span className=''>Hours</span> : {item?.job?.Hours}</li>
-                                <li className='nav-link'><span className=''>Salary Anneul</span> : {item?.job?.Salary}</li>
-                          </ul>
+                          <div className="modal-body">
+                              <div class="row">
+                                <div className='col-md-6'>
+                                    <img className='w-100 rounded-circle' src={`http://127.0.0.1:8000/${item?.user?.Profile}`} />
+                                </div>
+                                <div className='col-md-6'>
+                                    <ul className='navbar'>
+                                      <li className='nav-link'><span className=''>Name Jober</span> : {item?.user?.Name}</li>
+                                      <li className='nav-link'><span className=''>Job</span> : {item?.job?.Job}</li>
+                                      <li className='nav-link'><span className=''>Location</span> : {item?.job?.Location}</li>
+                                      <li className='nav-link'><span className=''>Phone</span> : {item?.user?.Phone}</li>
+                                      <li className='nav-link'><span className=''>Email</span> : {item?.user?.Email}</li>
+                                      <li className='nav-link'><span className=''>Type Job</span> : {item?.job?.Type}</li>
+                                      <li className='nav-link'><span className=''>Level</span> : {item?.job?.Level}</li>
+                                      <li className='nav-link'><span className=''>Rate</span> : {item?.job?.Rate}</li>
+                                      <li className='nav-link'><span className=''>Hours</span> : {item?.job?.Hours}</li>
+                                      <li className='nav-link'><span className=''>Salary Anneul</span> : {item?.job?.Salary}</li>
+                                </ul>
+                                </div>
+                                
+                              </div>
                           </div>
-                         
-                       </div>
+                          
+                        </div>
+                      </div>
                     </div>
-                    
-                  </div>
-                </div>
-              </div>
-                   </tr>
-                   
+                </tr>
+                  
+   
               ))}
   
   
