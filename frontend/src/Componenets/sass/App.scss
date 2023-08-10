@@ -274,6 +274,7 @@ a{
 .footer {
   background-color:black;
   color:white;
+ 
   ul{
     list-style:none;
     li{
@@ -281,9 +282,17 @@ a{
    }
   }
   .newsletter{
+   display:flex;
+   flex-direction:column;
+   align-items:center;
+
+   div{
+     width:50%;
+     position: relative;
+   }
      input[type="email"]{
-      height: 70px;
-      width:40%;
+      height: 65px;
+      width:100%;
       border: none;
       outline: none;
       padding-left: 20px;
@@ -296,7 +305,9 @@ a{
          color: #fff;
          padding: 16px 30px;
          border-radius: 25px;
-         transform: translateX(-140px);
+         position:absolute;
+         right:10px;
+         bottom:4px;
       } 
   }
 }
@@ -413,7 +424,11 @@ a{
    right: 7px;
    bottom: 7px;
  }
-
+.imgProfile{
+    width:90px;
+    height:90px;
+    border-radius:50%;
+}
  /*-----end dashboard-----*/
 
 /*-----start responsive-----*/

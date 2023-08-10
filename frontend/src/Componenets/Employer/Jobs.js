@@ -16,7 +16,6 @@ function Jobs() {
     const jobs = useSelector((state) => state.Data.Jobs);
     const [Auth,setAuth] = useState(false);
     const [Jobs,setJobs]=useState([]);
-
     const [userId,setuserId]=useState(null);
     const navigate = useNavigate();
     const dispatch = useDispatch();
@@ -121,7 +120,7 @@ axios.interceptors.response.use(function(response){
                       <td>{item.id}</td>
                       <td>{item.Job}</td>
                       <td>{item.category.Name}</td>
-                      <td>0</td>
+                      <td>{item.application.length}</td>
                       <td>{item?.created_at?.slice(0,10)},{item.Expired_Date}</td>
                       <td>{item.Status}</td>
                       <td>

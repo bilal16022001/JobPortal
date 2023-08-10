@@ -17,6 +17,11 @@ class ApplicationRepository implements ApplicationInterface
 
         return  $applications;
     }
+
+    public function AppliedJobs()
+    {
+        return Application::with("job.Company", "user")->where("User_id", auth()->user()->id)->get();
+    }
     public function ShortListApplication($request)
     {
 
@@ -36,15 +41,28 @@ class ApplicationRepository implements ApplicationInterface
 
     public function store($request)
     {
+        Application::create([
+            'User_id' => auth()->user()->id,
+            'Job_id' => $request->Job_id,
+            'Status' => 0
+
+        ]);
+
+        return response()->json([
+            'Status'  => 200,
+            'message' => 'You Applied Successfully'
+        ]);
     }
     public function update($request, $id)
     {
         if ($request->check == 1) {
             $application = Application::FindOrFail($id);
+            // return $application;
             $application->Status = 1;
             $application->save();
         } else {
             $application = Application::FindOrFail($id);
+            // return $application;
             $application->Status = 3;
             $application->save();
         }

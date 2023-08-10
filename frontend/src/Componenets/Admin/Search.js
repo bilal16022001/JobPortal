@@ -4,6 +4,9 @@ import styled from 'styled-components';
 import {fetchEmployers,fetchCandidates} from '../Redux-toolkit/Slice'
 import {useSelector,useDispatch} from 'react-redux'
 import {Link} from 'react-router-dom'
+import axios from 'axios';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import DeleteIcon from '@mui/icons-material/Delete';
 
 function Search() {
   
@@ -12,7 +15,7 @@ function Search() {
   const [who,setWho]=useState("");
   const employers = useSelector((state) => state.Data.Employers);
   const Candidates = useSelector((state) => state.Data.Candidates);
-
+  const [Data,setData] = useState([]);
   const dispatch = useDispatch();
  
   dispatch(fetchEmployers());
@@ -21,14 +24,22 @@ function Search() {
 
 const handlSearch = (e) => {
   e.preventDefault();
+console.log("test search");
 
- setShowRslt(Search)
+ const data = new FormData();
+       data.append("Search",Search);
+       data.append("person",who);
+
+    axios.post("/api/filterSearchuUser",data).then(res => {
+          console.log(res.data);
+          setData(res.data)
+    }).catch(err => {
+        console.log(err);
+    })
     
 }
 
-const handlWho = (e) => {
-  setWho(e.target.value);
-}
+
 
   return (
     <div className='d-flex'>
@@ -38,8 +49,8 @@ const handlWho = (e) => {
         <div className='content'>
              <div class="parent p-3">
                 <form onSubmit={handlSearch} className="mb-3">
-                   <input className='d-block mb-3' type="search" onChange={(e) => setSearch(e.target.value)} placeholder='phone Or Order Number' />
-                   <select className='form-control mb-3' onChange={handlWho}>
+                   <input className='d-block mb-3' type="search" name="Search" onChange={(e) => setSearch(e.target.value)} placeholder='phone Or Order Number' />
+                   <select className='form-control mb-3' onChange={(e) => setWho(e.target.value)}>
                       <option>choose who to search for</option>
                       <option value="Employers">Employers</option>
                       <option value="Candidates">Candidates</option>
@@ -56,7 +67,21 @@ const handlWho = (e) => {
                           <td>Email</td>
                           <td>Action</td>
                     </tr>
-
+                    {Data.length > 0 && <>
+                  {Data.map(item => (
+                       <tr>
+                          <td>{item.id}</td>
+                          <td>{item.Name}</td>
+                          <td>{item.Phone}</td>
+                          <td>{who=="Employers" ? item.email : item.Email}</td>
+                          <td>
+                              <Link to={`/Admin/${who=="Employers" ? "Employer" : "Candidate"}/${item.id}`}><VisibilityIcon/></Link>
+                          </td>
+                       </tr>
+                       
+                  ))}
+               </>}
+      
                   </table>
               </div>
               </div>

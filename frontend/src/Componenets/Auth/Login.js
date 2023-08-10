@@ -47,7 +47,8 @@ function Login() {
           axios.post("/api/loginU",data).then(res => {
 
               if(res.data.status == 200){
-               window.localStorage.setItem("auth_token_C",res.data.token);
+               window.localStorage.setItem("auth_token",res.data.token);
+               window.localStorage.setItem("role_user",res.data.role)
                navigate("/");
                swal("login Successfully!","","success");
             }

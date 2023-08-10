@@ -15,7 +15,8 @@ interface EmployerInterface
     public function login_E($request);
     public function store($request);
     public function RegisterEmp($request);
-    // public function update($request, $id);
+    public function update($request, $id);
+    public function logout($request);
 
     public function destroy($id);
 }

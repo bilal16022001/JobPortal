@@ -16,19 +16,79 @@ import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import SearchIcon from '@mui/icons-material/Search';
 import WorkIcon from '@mui/icons-material/Work';
 import SummarizeIcon from '@mui/icons-material/Summarize';
+import swal from 'sweetalert'
+import { useNavigate } from 'react-router';
 
 function SideBar_E() {
+
+  const [Auth,setAuth] = useState(false);
+  const navigate = useNavigate();
+  const [user,setUser]=useState([]);
+  useEffect(() => {
+
+    axios.get("/api/CheckEmployer").then(res=> {
+      if(res.data.status == 200){
+        console.log(res.data.user)
+        setUser(res.data.user);
+        setAuth(true)
+       }else{
+        setAuth(false)
+       }
+})
+  return () => {
+     setAuth(false);
+  }
+  },[]);
+
+
+  const logout = () => {
+     axios.post("/api/logoutE").then(res => {
+        if(res.data.status==200){
+          localStorage.removeItem("auth_token");
+             swal(res.data.message,"","success");
+             navigate("/login");
+        }
+    }).catch(err => {
+      console.log(err);
+     })
+  
+  }
+
+  axios.interceptors.response.use(undefined,function axiosRetryInterceptor(err){
+    if(err.response.status==401){
+       swal("Unauthorized",err.response.data.message,"warning")
+       navigate("/login")
+     }
+     
+     return Promise.reject(err)
+ })
+
+ axios.interceptors.response.use(function(response){
+    return response;
+},function(error){
+   if(error.response.status==403){
+    swal("Forbidden",error.response.data.message,"warning");
+    navigate("/login")
+    }
+    else if(error.response.status==404){
+        swal("404 Error","page not found","warning");
+        navigate("/login")
+    }
+    return Promise.reject(error)
+ }
+
+ )
     return (
         // <Side widthSide={widthSide}>
         <div className="sidebar">
         <div className="all">
         <div className="profile text-center">
                    
-                       {/* <Img className='imgProfile' src={ImgP} />           */}
-                       {/* <a className="Employer text-white dropdown-toggle d-block " dropdown-toggle href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">welcome  <span className='nameLogged'>{Name}</span></a> */}
+                       <img className='imgProfile' src={`http://localhost:8000/${user.logo}`}  />          
+                       <a className="Employer text-white dropdown-toggle d-block " dropdown-toggle href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">welcome  <span className='nameLogged'></span>{user.Name}</a>
                        <ul className="dropdown-menu dropMenu text-center" aria-labelledby="navbarDropdown">
-                          <li><a className="dropdown-item" href="#"><Link to="/Profile">Profile</Link></a></li>
-                          <li><a className="dropdown-item" href="#">logout</a></li>
+                          <li><a className="dropdown-item" href="#"><Link to="/Employer/Profile">Profile</Link></a></li>
+                          <li><a onClick={logout} className="dropdown-item" href="#">logout</a></li>
                       </ul>
     
           </div>

@@ -3,12 +3,13 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Employer;
 use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\File;
 
 
@@ -21,7 +22,23 @@ class UserController extends Controller
     {
         return User::all();
     }
-
+    public function filterUsers(Request $request)
+    {
+        if ($request->Search != "") {
+            return User::where("Name", "Like", "%" . $request->Search . "%")->get();
+        } else {
+            return User::all();
+        }
+        // return $request;
+    }
+    public function filterSearchuUser(Request $request)
+    {
+        if ($request->person == "Employers") {
+            return Employer::where("Name", "Like", "%" . $request->Search . "%")->Orwhere("Phone", $request->Search)->get();
+        } else {
+            return User::where("Name", "Like", "%" . $request->Search . "%")->Orwhere("Phone", $request->Search)->get();
+        }
+    }
     /**
      * Show the form for creating a new resource.
      */
@@ -103,6 +120,7 @@ class UserController extends Controller
             'status' => 200,
             'name' => $user->Name,
             'token' => $token,
+            'role' => 'user',
             'message' => 'login successfully'
         ]);
     }

@@ -26,6 +26,11 @@ class JobController extends Controller
     {
         return $this->job->filterJobs();
     }
+
+    public function filterJobsByArg(Request $request)
+    {
+        return $this->job->filterJobsByArg($request);
+    }
     /**
      * Show the form for creating a new resource.
      */

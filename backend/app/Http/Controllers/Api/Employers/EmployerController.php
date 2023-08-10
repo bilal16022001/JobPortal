@@ -69,7 +69,7 @@ class employerController extends Controller
      */
     public function update(Request $request, $id)
     {
-        // return $this->employer->update($request, $id);
+        return $this->employer->update($request, $id);
     }
 
     /**
@@ -78,5 +78,10 @@ class employerController extends Controller
     public function destroy($id)
     {
         return $this->employer->destroy($id);
+    }
+
+    public function logout(Request $request)
+    {
+        return $this->employer->logout($request);
     }
 }

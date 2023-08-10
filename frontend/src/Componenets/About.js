@@ -7,7 +7,7 @@ function About() {
    const [About,setAbout]=useState([])
   useEffect(() => {
 
-    axios.get("api/About").then(res => {
+    axios.get("api/Abouts").then(res => {
       setAbout(res.data)
     }).catch(err => {
        console.log(err);

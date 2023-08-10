@@ -1,4 +1,4 @@
-import React,{useEffect} from 'react'
+import React,{useEffect, useState,useRef } from 'react'
 import Header from './Header'
 import logoCom from './images/logoC.png'
 import BusinessCenterIcon from '@mui/icons-material/BusinessCenter';
@@ -6,17 +6,77 @@ import LocationOnIcon from '@mui/icons-material/LocationOn';
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
 import Footer from './Footer'
-import {fetchJobs} from './Redux-toolkit/Slice'
+import {fetchJobs,fetchCategories} from './Redux-toolkit/Slice'
 import { useDispatch, useSelector } from 'react-redux';
+import axios from 'axios';
 
 function AllJobs() {
-    
+    let debounceTimer;
+
     const dispatch = useDispatch();
     const jobs = useSelector((state) => state.Data.Jobs);
+    const categories = useSelector((state) => state.Data.Categories);
+    const [Jobs,setJobs]=useState([])
+    const [Title,setTitle]=useState("");
+    const [CheckBoxes,setCheckBoxes]=useState([])
+    const [SlctType,setSlctType]=useState("")
+    const [Category_id,setCategory_id]=useState("")
+    const [inputs,setInputs]=useState({
+     })
+     
     useEffect(() => {
     dispatch(fetchJobs())
+    dispatch(fetchCategories())
+
+     axios.get("api/getJobs").then(res => {
+        console.log(res.data)
+        setJobs(res.data)
+        }).catch(err => {
+          console.log(err);
+        })
+        return () => {
+            clearTimeout(debounceTimer);
+          };
+       
     },[])
 
+
+  const handlChange = (event) => {
+
+    const {name,value,checked} = event.target;
+
+    if(checked){
+        setCheckBoxes((prev) => [...prev,name]);
+    }else{
+        setCheckBoxes((prev) => prev.filter((option) => option !== name));
+    }
+   
+
+    setInputs((prev) => ({
+        ...prev,
+        CheckBoxes:CheckBoxes ? CheckBoxes : [],
+        [name]:value
+     }))
+  
+    clearTimeout(debounceTimer); 
+    debounceTimer = setTimeout(() => {
+        //   console.log(CheckBoxes)
+        axios.post("api/filterJobsByArg", inputs)
+        .then(res => {
+          console.log(res.data);
+          setJobs(res.data);
+        })
+        .catch(err => {
+          console.log(err);
+        });
+
+    }, 500);
+
+    
+  };
+
+
+  
   return (
     <div>
         <Header/>
@@ -25,20 +85,21 @@ function AllJobs() {
                <div className='col-sm-6 col-md-4 mb-3'>
                    <div className='sideBar p-4'>
                        <div className='jobTitle'>
+                        
                           <h3>Job Title</h3>
-                          <input type="text" className='form-control' placeholder='Job Title' />
+                          <input type="text" className='form-control' name='Job' onChange={handlChange} placeholder='Job Title' />
                        </div>
                        <div className='location'>
                           <h3>Location</h3>
-                          <input type="text" className='form-control' placeholder='Location' />
+                          <input type="text" className='form-control' name='Location' onChange={handlChange} placeholder='Location' />
                        </div>
                        <div className='category'>
                           <h3>Category</h3>
-                          <select className='form-control'>
-                              <option>test</option>
-                              <option>test</option>
-                              <option>test</option>
-                              <option>test</option>
+                          <select className='form-control' name='Category_id' onChange={handlChange}> 
+                               <option value="All">All</option>
+                               {categories.map(item => (
+                                  <option value={item.id}>{item.Name}</option>
+                               ))}
                           </select>
                        </div>
                        <div className='jobType'>
@@ -46,10 +107,10 @@ function AllJobs() {
                        <h3>Job type</h3>
                        <form>
                          <ul className='navbar-nav'>    
-                                <li><input type="checkbox"/> Freelancer</li>
-                                <li><input type="checkbox"/> full-time</li>
-                                <li><input type="checkbox"/> part-time</li>
-                                <li><input type="checkbox"/> contract</li>  
+                                <li><input type="checkbox" name="Freelancer"  onChange={handlChange}  /> Freelancer</li>
+                                <li><input type="checkbox" name="FullTime"    onChange={handlChange} /> Full-Time</li>
+                                <li><input type="checkbox" name="PartTime"   onChange={handlChange} /> Part-Time</li>
+                                <li><input type="checkbox" name="Contract"   onChange={handlChange} /> Contract</li>  
                           </ul>
                           </form>
                        </div>
@@ -86,10 +147,10 @@ function AllJobs() {
                    </div>
                </div>
                <div className='col-sm-6 col-md-8 mb-3'>
-                   <div className='row'>
+                   <div className='row '>
                     
-        {jobs.length > 0 ? jobs.map(item => (
-            <div className='col-sm-6 col-md-6 mb-3'>
+        {/* {Jobs.length > 0 ? Jobs.map(item => (
+            <div className='col-sm-6 col-md-6 border border-3 border-solid'>
               <div className='logoCompany mb-3'>
               <img src={`http://localhost:8000/${item.company.logo}`} style={{width:"100px"}} className="rounded-circle" />                      
               </div>
@@ -102,7 +163,7 @@ function AllJobs() {
                     </li>
                     <li>
                         <LocationOnIcon/>
-                        {item.company.Country}, {item.company.Location}
+                        {item.Location}, {item.Place}
                     </li>
                     <li>
                         <QueryBuilderIcon/>
@@ -124,7 +185,7 @@ function AllJobs() {
                 </ul>
               </div>
            </div>
-        )) : <div>There is no jobs</div>}
+        )) : <div>There is no jobs</div>} */}
                 
                    </div>
                </div>

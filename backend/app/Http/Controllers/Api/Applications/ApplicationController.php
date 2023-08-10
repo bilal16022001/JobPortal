@@ -30,7 +30,10 @@ class ApplicationController extends Controller
     {
         return $this->application->filterApplications();
     }
-
+    public function AppliedJobs()
+    {
+        return $this->application->AppliedJobs();
+    }
     /**
      * Show the form for creating a new resource.
      */

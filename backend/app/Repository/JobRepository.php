@@ -20,6 +20,22 @@ class JobRepository implements JobInterface
                 $qurey->where("Company_id", auth()->user()->id);
             })->get();
     }
+    public function filterJobsByArg($request)
+    {
+        // return $request->CheckBoxes;
+
+        if ($request->Job != "" || $request->Location != "" || $request->CheckBoxes != "") {
+            return Job::with("Category", "Company", "application.user")
+                ->where("Job", "LIKE", "%" . $request->Job . "%")
+                ->where("Location", "LIKE", "%" . $request->Location . "%")
+                ->whereIn("Type", $request->CheckBoxes)
+                ->get();
+        } else if ($request->Category_id == "All") {
+            return Job::with("Category", "Company", "application.user")->get();
+        } else {
+            return Job::with("Category", "Company", "application.user")->get();
+        }
+    }
     public function show($id)
     {
         return Job::with("Category", "Company", "application")->FindOrFail($id);

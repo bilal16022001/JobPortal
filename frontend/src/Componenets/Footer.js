@@ -5,11 +5,13 @@ function Footer() {
   return (
     <div className='footer p-4'>
         <div className='container'>
-            <div className='newsletter text-center mb-5'>
+            <div className='newsletter mb-5'>
                 <h2 className='mb-2'>Subscribe Our Newsletter</h2>
                 <p className='mb-4'>We don’t send spam so don’t worry.</p>
-                <input type="email" placeholder='Your Email' />
-                <input type="submit" value="SubScribe" />
+                <div className='d-flex'>
+                    <input type="email" placeholder='Your Email' />
+                    <input type="submit" value="SubScribe" />
+                </div>
             </div>
             <div className='row'>
                 <div className='col-sm-6 col-md-3'>

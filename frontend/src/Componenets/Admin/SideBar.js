@@ -14,20 +14,79 @@ import PagesIcon from '@mui/icons-material/Pages';
 import WorkOutlineIcon from '@mui/icons-material/WorkOutline';
 import SearchIcon from '@mui/icons-material/Search';
 import WorkIcon from '@mui/icons-material/Work';
+import swal from 'sweetalert'
+import { useNavigate } from 'react-router';
+
 
 function SideBar() {
- 
+  const [Auth,setAuth] = useState(false);
+  const navigate = useNavigate();
+  const [user,setUser]=useState([]);
+  useEffect(() => {
+
+    axios.get("/api/CheckAuth").then(res=> {
+      if(res.data.status == 200){
+        console.log(res.data.user)
+        setUser(res.data.user);
+        setAuth(true)
+       }else{
+        setAuth(false)
+       }
+})
+  return () => {
+     setAuth(false);
+  }
+  },[]);
+
+
+  const logout = () => {
+     axios.post("/api/logoutA").then(res => {
+        if(res.data.status==200){
+          localStorage.removeItem("auth_token");
+             swal(res.data.message,"","success");
+             navigate("/Admin");
+        }
+    }).catch(err => {
+      console.log(err);
+     })
+  
+  }
+
+  axios.interceptors.response.use(undefined,function axiosRetryInterceptor(err){
+    if(err.response.status==401){
+       swal("Unauthorized",err.response.data.message,"warning")
+       navigate("/Admin")
+     }
+     
+     return Promise.reject(err)
+ })
+
+ axios.interceptors.response.use(function(response){
+    return response;
+},function(error){
+   if(error.response.status==403){
+    swal("Forbidden",error.response.data.message,"warning");
+    navigate("/Admin")
+    }
+    else if(error.response.status==404){
+        swal("404 Error","page not found","warning");
+        navigate("/Admin")
+    }
+    return Promise.reject(error)
+ }
+
+ )
   return (
     // <Side widthSide={widthSide}>
     <div className="sidebar">
     <div className="all">
     <div className="profile text-center">
                
-                   {/* <Img className='imgProfile' src={ImgP} />           */}
-                   {/* <a className="admin text-white dropdown-toggle d-block " dropdown-toggle href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">welcome  <span className='nameLogged'>{Name}</span></a> */}
+    <img className='imgProfile' src={`http://localhost:8000/${user.profile}`}  />          
+                       <a className="Employer text-white dropdown-toggle d-block " dropdown-toggle href="#" id="navbarDropdown" role="button" data-bs-toggle="dropdown">welcome  <span className='nameLogged'></span>{user.Name}</a>
                    <ul className="dropdown-menu dropMenu text-center" aria-labelledby="navbarDropdown">
-                      <li><a className="dropdown-item" href="#"><Link to="/Profile">Profile</Link></a></li>
-                      <li><a className="dropdown-item" href="#">logout</a></li>
+                      <li><a className="dropdown-item" href="#"><Link to="/Admin/Profile">Profile</Link></a></li>
+                      <li><a onClick={logout} className="dropdown-item" href="#">logout</a></li>
                   </ul>
 
       </div>

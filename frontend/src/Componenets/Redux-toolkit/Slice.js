@@ -12,17 +12,17 @@ const initialState = {
  }
 
 export const fetchCategories = createAsyncThunk("category/fetch",() => {
-    return axios.get("/api/Category").then((res) => res.data);
+    return axios.get("/api/getCategories").then((res) => res.data);
 })
 export const fetchEmployers = createAsyncThunk("employer/fetch",() => {
-   return axios.get("/api/Employers").then((res) => res.data);
+   return axios.get("/api/getCompanies").then((res) => res.data);
 })
 
 export const fetchCandidates = createAsyncThunk("candidate/fetch",() => {
    return axios.get("/api/Users").then((res) => res.data);
 })
 export const fetchJobs = createAsyncThunk("Job/fetch",() => {
-   return axios.get("/api/Job").then((res) => res.data);
+   return axios.get("/api/getJobs").then((res) => res.data);
 })
 export const fetchApplications = createAsyncThunk("Application/fetch",() => {
    return axios.get("/api/Applications").then((res) => res.data);

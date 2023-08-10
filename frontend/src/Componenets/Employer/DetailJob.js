@@ -9,20 +9,59 @@ import AccessTimeIcon from '@mui/icons-material/AccessTime';
 import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 import axios from 'axios';
 import { useParams } from 'react-router';
+import { useNavigate } from 'react-router'
+import swal from 'sweetalert';
 
 function DetailJob() {
     const [Job,setJob]=useState([]);
-
+    const [Auth,setAuth] = useState(false);
+    const navigate = useNavigate();
     const {id} = useParams();
+    console.log("yes this")
     useEffect(() => {
-        axios.get(`/api/Job/${id}`).then(res => {
-           console.log(res.data);
-           setJob(res.data);
-        }).catch(err => {
-           console.log(err);
-        })
+        // axios.get(`/api/Job/${id}`).then(res => {
+        //    console.log(res.data);
+        //    setJob(res.data);
+        // }).catch(err => {
+        //    console.log(err);
+        // })
+        // axios.get("/api/CheckEmployer").then(res=> {
+        //     if(res.data.status == 200){
+        //       console.log(res.data.message);
+        //      setAuth(true)
+        //      }else{
+        //       setAuth(false)
+        //      }
+        //   })
+      
+        // return () => {
+        //    setAuth(false);
+        // }
     },[]);
-
+    // axios.interceptors.response.use(undefined,function axiosRetryInterceptor(err){
+    //     if(err.response.status==401){
+    //        swal("Unauthorized",err.response.data.message,"warning")
+    //        navigate("/login")
+    //      }
+         
+    //      return Promise.reject(err)
+    // })
+    
+    // axios.interceptors.response.use(function(response){
+    //     return response;
+    // },function(error){
+    //    if(error.response.status==403){
+    //     swal("Forbidden",error.response.data.message,"warning");
+    //     navigate("/login")
+    //     }
+    //     else if(error.response.status==404){
+    //         swal("404 Error","page not found","warning");
+    //         navigate("/login")
+    //     }
+    //     return Promise.reject(error)
+    //  }
+    
+    // )
   return (
     <div>
     <div className='d-flex'>

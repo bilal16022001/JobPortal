@@ -35,7 +35,10 @@ import ShortListed from './Componenets/Employer/ShortListed';
 import Reports_E from './Componenets/Employer/Reports_E';
 import Profile from './Componenets/Candidate/Profile';
 import AppliedJob from './Componenets/Candidate/AppliedJob';
-import JobDetail from './Componenets/DetailJob';
+import JobDetail from './Componenets/JobDetail';
+import Profile_A from './Componenets/Admin/Profile_A';
+import Profile_E from './Componenets/Employer/Profile_E';
+import JobsCategory from './Componenets/JobsCategory';
 
 //solve problem CSRF token mismatch
 axios.defaults.baseURL = "http://localhost:8000/";
@@ -74,7 +77,7 @@ function App() {
             <Route path='/Blogs' element={<Blogs/>} />
             <Route path='/Blog/:id' element={<Blog/>} />
             <Route path='/Job/:id' element={<JobDetail/>} />
-
+            <Route path='/Category/:id' element={<JobsCategory/>} />
          
                 <Route path='/Profile' element={<Profile/>} />
                 <Route path='/AppliedJob' element={<AppliedJob/>} />
@@ -91,6 +94,8 @@ function App() {
                <Route path='/Admin/Reports' element={<Reports/>} />
                <Route path='/Admin/Search' element={<Search/>} />
                <Route path='/Admin/Report/role=/:role&/from/:from&to/:to' element={<DetailRaport/>} />
+               <Route path='/Admin/Profile' element={<Profile_A/>} />
+
              {/* end Module Admin */}
 
               {/* start Module Employer */}
@@ -102,6 +107,7 @@ function App() {
               <Route path='/Employer/Applications' element={<Applications/>} />
               <Route path='/Employer/ShortListed' element={<ShortListed/>} />
               <Route path='/Employer/Reports' element={<Reports_E/>} />
+              <Route path='/Employer/Profile' element={<Profile_E/>} />
 
                {/* end Module Employer */}
 

@@ -16,7 +16,7 @@ function AppliedJob() {
   
     const [Auth,setAuth]=useState(false);
     const navigate = useNavigate();
-    const Applications = useSelector((state) => state.Data.Applications);
+    const [data,setData] = useState([])
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -28,14 +28,22 @@ function AppliedJob() {
             setAuth(false)
            }
        })
-       dispatch(fetchApplications())
+      //  dispatch(fetchApplications())
+       fetchAppliedJobs()
       return () => {
          setAuth(false);
       }  
 
       },[])
 
-console.log("appas",Applications);
+const fetchAppliedJobs = () => {
+    axios.get("/api/AppliedJobs").then(res => {
+          console.log(res.data);
+          setData(res.data);
+    }).catch(err => {
+         console.log(err);
+    })
+}
 
     axios.interceptors.response.use(undefined,function axiosRetryInterceptor(err){
         if(err.response.status==401){
@@ -67,7 +75,7 @@ console.log("appas",Applications);
          <div className='container p-3'>
           <h3 className='mb-3'>You Applied Job</h3>
           <div className='row'>
-            {Applications.length > 0 ? Applications.map(item => (
+            {data.length > 0 ? data.map(item => (
               <div className='col-sm-6 col-md-6'>
               <div className='border border-3 border-solid p-3'>
               <div className='logoCompany mb-3'>

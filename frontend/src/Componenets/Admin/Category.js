@@ -47,9 +47,7 @@ function Category() {
 
       axios.get('/sanctum/csrf-cookie').then(response => {
          axios.post("/api/Category",data).then(res => {
-               window.location.reload(true);
-               // console.log(res.data);
-               
+               window.location.reload(true);               
          }).catch(err => {
             setError(err.response.data.message);
          })

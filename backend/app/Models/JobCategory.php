@@ -13,4 +13,9 @@ class JobCategory extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable;
 
     protected $fillable = ['Name'];
+
+    public function Jobs()
+    {
+        return $this->hasMany("\App\Models\Job", "Category_id");
+    }
 }

@@ -12,8 +12,8 @@ function Contact() {
 
    useEffect(() => {
  
-     axios.get("api/Contact").then(res => {
-      seContact(res.data)
+     axios.get("api/Contacts").then(res => {
+         seContact(res.data)
      }).catch(err => {
         console.log(err);
      });

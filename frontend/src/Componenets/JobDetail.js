@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import Footer from './Footer'
 import Header from './Header'
@@ -9,15 +9,54 @@ import PhoneIcon from '@mui/icons-material/Phone'
 import EmailIcon from '@mui/icons-material/Email'
 import QueryBuilderIcon from '@mui/icons-material/QueryBuilder';
 import AttachMoneyIcon from '@mui/icons-material/AttachMoney';
-import { useParams } from 'react-router'
+import { useNavigate, useParams } from 'react-router'
+import axios from 'axios'
+import swal from 'sweetalert'
 
-function DetailJobs() {
+
+function JobDetail() {
+
+  const {id} = useParams();
   const jobs = useSelector((state) => state.Data.Jobs);
   const dispatch = useDispatch();
-  const {id} = useParams();
+console.log("Jobs",jobs);
+  const [userId,setUserId]=useState(null)
+  const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(fetchJobs())
+
+    axios.get("/api/CheckCnadidate").then(res=> {
+        if(res.data.status == 200){
+          console.log(res.data.message);
+          setUserId(res.data.user.id)
+        }
+      })
+
   },[])
+
+
+
+const handlSubmit = (e)=>{
+    e.preventDefault();
+   if(localStorage.getItem("auth_token") && localStorage.getItem("role_user")){
+           console.log("rak dayr login");
+           const data = {
+              Job_id:id
+           }
+           axios.post("/api/ApplyJob",data).then(res => {
+                 if(res.data.Status==200){
+                   swal(res.data.message,"","success");
+                 }
+            }).catch(err => {
+               console.log(err);
+            })
+   }else{
+       console.log("khsk der login");
+       navigate("/login");
+    }
+}
+
 
   return (
     <div>
@@ -55,8 +94,11 @@ function DetailJobs() {
                     </div>
                     </div>
                 </div>
+               
                 <div className='col-sm-6 col-md-2'>
-                    <button className='btn btn-primary'>Apply</button>
+        
+                { item.application.filter(i => i.Job_id==id && i.User_id == userId).length > 0 ? <button type="button" class="btn btn-primary" disabled>You Applied this Job</button> : <button type="button" class="btn btn-primary" onClick={handlSubmit}>Apply</button>}
+               
                 </div>
             </div>
         </div>
@@ -80,11 +122,12 @@ function DetailJobs() {
              
                <div className='relatedJobs'>
                     <h2>Related jobs</h2>
-                    {item.company.length > 0 ? item.company.map(it => (
+            
+                    {jobs.filter(it => it.id!=id && it.Company_id==item.company.id).length > 0 ? jobs.filter(it => it.id!=id && it.Company_id==item.company.id).map(it => (
                       <div className='mb-3'>
                       <div className='border border-3 border-solid p-3'>
                      <div className='logoCompany mb-3'>
-                        <img src={`http://localhost:8000/${item.logo}`} style={{width:"130px"}} className="rounded-circle" />
+                        <img src={`http://localhost:8000/${item.company.logo}`} style={{width:"130px"}} className="rounded-circle" />
                      </div>
                      <div className='job'>
                        <h4 className='mb-2'>{it.Job}</h4>
@@ -152,8 +195,9 @@ function DetailJobs() {
         ))}
       </div>
       <Footer/>
+
     </div>
   )
 }
 
-export default DetailJobs
+export default JobDetail

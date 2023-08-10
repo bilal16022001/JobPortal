@@ -11,7 +11,7 @@ class JobCategoryRepository implements JobCategoryInterface
 
     public function index()
     {
-        return JobCategory::all();
+        return JobCategory::with("Jobs.Company")->get();
     }
 
     public function create()

@@ -4,6 +4,7 @@ namespace App\Repository;
 
 use App\Interface\EmployerInterface;
 use App\Models\Employer;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 
@@ -53,10 +54,53 @@ class EmployerRepository implements EmployerInterface
             'message' => 'login successfully'
         ]);
     }
-    // public function update($request, $id)
-    // {
-    //     return "updt";
-    // }
+    public function update($request, $id)
+    {
+        $employer = Employer::FindOrFail(auth()->user()->id);
+        $employer->Name = $request->name;
+        $employer->email = $request->email;
+        $employer->Categories = $request->Categories;
+        $employer->Phone = $request->Phone;
+        $employer->Location = $request->Location;
+        $employer->Indusrty = $request->Indusrty;
+        $employer->CompanySize = $request->CompanySize;
+        $employer->Founded = $request->Founded;
+        $employer->WebSite = $request->WebSite;
+        $employer->Address = $request->Address;
+        $employer->Country = $request->Country;
+        $employer->AboutCompany = $request->AboutCompany;
+
+        if (Hash::needsRehash($request->Password)) {
+            $pass = Hash::make($request->Password);
+        } else {
+            $pass = $request->Password;
+        }
+
+        if (empty($request->file("logo"))) {
+            $img = $request->logo;
+        } else {
+            $file = $request->logo;
+            $ex = $file->getClientOriginalExtension();
+            $fileName =  Str::random() . "." . $ex;
+            $file->move("attachments/LogoCompany", $fileName);
+            $img = "attachments/LogoCompany/" . $fileName;
+        }
+        $imagePath = public_path($employer->logo);
+        if (File::exists($imagePath)) {
+            File::delete($imagePath);
+        }
+
+
+        $employer->Password = $pass;
+        $employer->logo = $img;
+        $employer->save();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Your Data Updated Successfully!'
+        ]);
+    }
+
     public function RegisterEmp($request)
     {
         $request->validate([
@@ -102,6 +146,15 @@ class EmployerRepository implements EmployerInterface
 
         return response()->json([
             'status' => 200
+        ]);
+    }
+    public function logout($request)
+    {
+        auth()->user()->tokens()->delete();
+
+        return response()->json([
+            'status' => 200,
+            'message' => 'Logout Done Successfully'
         ]);
     }
 }

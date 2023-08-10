@@ -18,8 +18,8 @@ function Applications() {
   const [Auth,setAuth] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-
-
+ 
+  console.log(Applications);
   useEffect(() => {
      dispatch(fetchApplications())
      dispatch(fetchJobs());
@@ -37,7 +37,7 @@ function Applications() {
   }
   },[]);
 
-
+// console.log("ppas",Applications);
 
   const AcceptCandidate = (id) => {
      swal({
@@ -179,14 +179,14 @@ axios.interceptors.response.use(function(response){
                       <td>{item.user.Name}</td>
                       <td>{item.job.Job}</td>
                       <td>{item.job.Location}</td>
-                      <td>{item.job.Status == 0 ? "Pending" : item.job.Status == 1 ? "Approved" : "Rejected"}</td>
+                      <td>{item.Status == 0 ? "Pending" : item.Status == 1 ? "Approved" : "Rejected"}</td>
                       <td>
                           <a  href='#' data-bs-toggle="modal" data-bs-target={`#show${item.id}`}><VisibilityIcon/></a>
-                          <a  href='#' onClick={()=>AcceptCandidate(item.user.id)}><DoneIcon/></a>
-                          <a href='# ' onClick={()=>RejectedCandidate(item.user.id)}><ClearIcon/></a>
-                          <a href='#'  onClick={()=>DeleteCandidate(item.user.id)}><DeleteIcon/></a>
+                          <a  href='#' onClick={()=>AcceptCandidate(item.id)}><DoneIcon/></a>
+                          <a href='# ' onClick={()=>RejectedCandidate(item.id)}><ClearIcon/></a>
+                          <a href='#'  onClick={()=>DeleteCandidate(item.id)}><DeleteIcon/></a>
                       </td>
-            <div class="modal fade" id={`show${item.user.id}`} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id={`show${item.id}`} tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog">
                   <div class="modal-content">
                     <div class="modal-header">

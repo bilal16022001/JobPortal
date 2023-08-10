@@ -31,9 +31,10 @@ function Header() {
   const logout = () => {
     axios.post("/api/logout").then(res => {
            if(res.data.status==200){
-            localStorage.removeItem("auth_token_C");
+            localStorage.removeItem("auth_token");
+            localStorage.removeItem("role_user");
              swal(res.data.message,"","success");
-             navigate("/")
+             navigate("/login")
           }
     }).catch(err => {
        console.log(err);
@@ -57,7 +58,7 @@ function Header() {
     
           <li className='nav-item'><Link className='nav-link' to='/'>Home</Link></li>
           <li className='nav-item'><Link className='nav-link' to='/jobs'>Jobs</Link></li>
-         {!localStorage.getItem("auth_token_C") ?
+         {!localStorage.getItem("role_user") ?
               <>  
                   <li className='nav-item'><Link className='nav-link' to='/login'>login</Link></li> 
                   <li className='nav-item'><Link className='nav-link' to='/register'>Register</Link></li>

@@ -11,6 +11,7 @@ import {Link} from 'react-router-dom'
 function Candidates() {
     const [Auth,setAuth]=useState(false);
     const [candidates,setCandidates]=useState([]);
+    const [filter,setFilter]=useState({Search:""});
 
     const navigate = useNavigate();
       useEffect(() => {
@@ -30,12 +31,36 @@ function Candidates() {
 
       const fetchUsers = () => {
          axios.get("api/Users").then(res => {
-              console.log(res.data);
               setCandidates(res.data);
         }).catch(err => {
            console.log(err);
         })
       }
+
+      let debounceTimer;
+ 
+      const handleChange = (event) => {
+       
+        const inputSearchTerm = event.target.value;
+        clearTimeout(debounceTimer);
+            
+        debounceTimer = setTimeout(() => {
+
+          const Data = new FormData();
+                Data.append("Search",inputSearchTerm);
+
+          axios.post("api/filterUsers",Data).then(res => {
+            setCandidates(res.data);
+            }).catch(err => {
+              console.log(err);
+            })
+
+        }, 500);
+
+      
+        
+      }
+      
       const DeleteCandidate = (id) => {
     
         swal({
@@ -100,6 +125,9 @@ function Candidates() {
   <div class="parent p-3">
 <h2 class="text-center mb-4">Manage Candidates</h2>
 <div class="">
+     <div className=''>
+        <input type="search" className='mb-3' name='Search' onChange={handleChange}  placeholder='Search by name' />
+     </div>
     <div class="table-responsive">
         <table class="main-table text-center table table-bordered">
              <tr>

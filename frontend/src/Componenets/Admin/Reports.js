@@ -27,8 +27,6 @@ function Reports() {
         setformD(FromDate)
         setTod(ToDate);
     
-       console.log("empolyers =>",employers.filter(item => item.created_at.slice(0,10) >= FromDate && item.created_at.slice(0,10) <= ToDate).length);
-       console.log("Candidates =>",Candidates.filter(item => item.created_at.slice(0,10) >= FromDate && item.created_at.slice(0,10) <= ToDate).length);
     }
 
   return (
